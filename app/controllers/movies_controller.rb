@@ -11,6 +11,8 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.group(:rating).order(:rating).pluck(:rating)
+
     if (params.has_key? :sort)
       if (params[:sort] == "title")
         @movies = Movie.order(:title)
@@ -20,7 +22,12 @@ class MoviesController < ApplicationController
         @sort_type = :date
       end
     else
-      @movies = Movie.all
+      if (params["ratings"])
+        @movies = Movie.where({ :rating => params["ratings"].keys })
+      else
+        @movies = Movie.all
+      end
+
       @sort_type = nil
     end
   end
