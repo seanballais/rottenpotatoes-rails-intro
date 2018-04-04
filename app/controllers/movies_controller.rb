@@ -25,6 +25,8 @@ class MoviesController < ApplicationController
       if (params[:ratings])
         session[:ratings] = params[:ratings]
       end
+    else
+      session[:ratings] = { "G" => 1, "NC-17" => 1, "PG" => 1, "PG-13" => 1, "R" => 1 }
     end
     
     # Set the settings
