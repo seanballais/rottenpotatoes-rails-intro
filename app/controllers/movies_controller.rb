@@ -12,15 +12,24 @@ class MoviesController < ApplicationController
 
   def index
     # Get settings
-    if (params[:sort])
-      session[:sort] = params[:sort]
-    elsif (params[:ratings])
-      session[:ratings] = params[:ratings]
+    if (!params[:sort] && !params[:ratings] && session[:ratings])
+      flash.keep
+      redirect_to movies_path(:sort => session[:sort], :ratings => session[:ratings])
+    end
+
+    if (params)
+      if (params[:sort])
+        session[:sort] = params[:sort]
+      end
+    
+      if (params[:ratings])
+        session[:ratings] = params[:ratings]
+      end
     end
     
     # Set the settings
     @all_ratings = ["G", "NC-17", "PG", "PG-13", "R"]
-    @sort_type = session[:sort] if session[:sort] else nil
+    @sort_type = session[:sort] if session[:sort]
     if (session[:ratings])
       @movies = Movie.where({ :rating => session[:ratings].keys })
     else
