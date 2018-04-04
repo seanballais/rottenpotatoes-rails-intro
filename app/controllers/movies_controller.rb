@@ -12,24 +12,17 @@ class MoviesController < ApplicationController
 
   def index
     # Get settings
-    @all_ratings = Movie.group(:rating).order(:rating).pluck(:rating)
-
-    if (params.has_key? :sort)
-      if (params[:sort] == "title")
-        session[:sort] = "title"
-      elsif (params[:sort] == "date")
-        session[:sort] = "release_date"
-      end
-    else
-      if (params["ratings"])
-        session[:ratings] = params["ratings"].keys
-      end
+    if (params[:sort])
+      session[:sort] = params[:sort]
+    elsif (params[:ratings])
+      session[:ratings] = params[:ratings]
     end
-
+    
     # Set the settings
-    @sort_type = session[:sort].to_sym if session[:sort] else nil
+    @all_ratings = ["G", "NC-17", "PG", "PG-13", "R"]
+    @sort_type = session[:sort] if session[:sort] else nil
     if (session[:ratings])
-      @movies = Movie.where({ :rating => session[:ratings] })
+      @movies = Movie.where({ :rating => session[:ratings].keys })
     else
       @movies = Movie.all
     end
